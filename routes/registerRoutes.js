@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 app.set("view engine", "pug")
 app.set("views", "views") // when need a template go to the folder 'views'
 
-app.use(bodyParser.urlencoded({ extended: false })) // false here means body of thar req can only contain strings and arrays only.
+app.use(bodyParser.urlencoded({ extended: false })) // false here means body of that req can only contain strings and arrays only.
 
 // router will handle the request here not app
 router.get("/", (req, res, next) => {
@@ -52,10 +52,10 @@ router.post("/", async (req, res, next) => {
             
             data.password = await bcrypt.hash(password, 10) // how many times to do hashing calculation on password(2**10)
 
-            User.create(data) // mongodb stuffs return promise hence async
+            User.create(data) // mongodb stuffs return promise hence async, also mongodb itself validates if data according to schema or not.
             .then((user) => {
                 // console.log(user)
-                req.session.user = user
+                req.session.user = user // starting the session after registering 
                 return res.redirect("/")
             })
         }
@@ -71,7 +71,8 @@ router.post("/", async (req, res, next) => {
         }
     } 
     else {
-        payload.errorMessage = "make sure each field has valid value."
+        payload.errorMessage = "make sure each field has valid value." // if any error other than already exists
+        
         res.status(200).render("register", payload) // if user requests the home page and not signed in, register page should be rendered.
         // payload will pass back if some field empty so that user can change. so need to change pug code accordingly.
     }

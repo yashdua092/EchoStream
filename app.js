@@ -20,23 +20,26 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
     secret: "bbq sauce", // will use this string to hash the session
     resave: true, // saved the session
-    saveUninitialized: false // don't save if not set 
+    saveUninitialized: false // don't save if not set.
 }))
 
 // Routes
 const loginRoute = require('./routes/loginRoutes')
 const registerRoute = require('./routes/registerRoutes')
+const logoutRoute = require('./routes/logout')
+
 
 // app.use() is used to setup middleware for the application.
 // from main page to different pages basically.
-app.use("/login", loginRoute) // after returning from middleware, need to get the user to login if not registered. this is where it will go from.
+app.use("/login", loginRoute) // after returning from middleware, need to get the user to login if already registered. this is where it will go from middleware.
 app.use("/register", registerRoute)
+app.use("/logout", logoutRoute)
 
 app.get("/", middleware.requireLogin, (req, res, next) => {
 // this function tackles what happens when user request the root of the site.(home page)
     var payload = {
         pageTitle: "Hola",
-        userLoggedIn: req.session.user
+        userLoggedIn: req.session.user // info about the user which was stored in req.session.user is given to userLoggedIn and hence payload which is sent to pug file.
     }
 
     // res.status(200).send("Yahoo!") // successful

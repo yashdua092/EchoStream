@@ -8,10 +8,44 @@ html(lang="en")
         title #{pageTitle}
 
         link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM', crossorigin='anonymous')
-
+        link(rel="stylesheet", href="/css/main.css")
     body 
-        block content
+        //- div with classname wrapper
+        .wrapper 
+            .row
+                //- nav.col-2.col-md-5
+                nav.col-2
+                    a.blue(href="/")
+                        i.fas.fa-dove
+                    a(href="/")
+                        i.fas.fa-home
+                    a(href="/search")
+                        i.fas.fa-search
+                    a(href="/notifications")
+                        i.fas.fa-bell
+                    a(href="/messages")
+                        i.fas.fa-envelope
+                    a(href="/profile")
+                        i.fas.fa-user
+                    a(href="/logout")
+                        i.fas.fa-sign-out-alt
 
+                .mainSectionContainer.col-10.col-md-8.col-lg-6
+                    .titleContainer
+                        h1 #{pageTitle}
+                    //- page specific content inside block content
+                    block content
+
+                //- to get div without a classname just use div
+                .d-none.d-md-block.col-md-2.col-lg-4
+                    span third column 
+
+
+
+
+
+    //- font awesome
+    script(src='https://kit.fontawesome.com/fb1f26b387.js', crossorigin='anonymous')
     //- jquery
     script(src='https://code.jquery.com/jquery-3.7.0.min.js', integrity='sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=', crossorigin='anonymous')
     //- bootstrap

@@ -40,7 +40,7 @@ router.post("/", async (req, res, next) => {
             // user.password from schema stores the password which gets mongoose instance from database.js
 
             if(result === true) {
-                req.session.user = user
+                req.session.user = user // returned from database using findOne, This means that the user object will be stored in the session and can be accessed and used in subsequent requests from the same client.
                 return res.redirect("/")
             }
             
