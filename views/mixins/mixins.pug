@@ -1,0 +1,13 @@
+//- these are basically resuable block of pug codes that can be used.
+
+//- making for post form
+
+mixin createPostForm(userLoggedIn)
+    //- identation as python
+    .postFormContainer  
+        .userImageContainer 
+            img(src=userLoggedIn.profilePic, alt="User's profile picture")
+        .textareaContainer 
+            textarea#postTextarea(placeholder="what's on your mind?")
+            .buttonContainer 
+                button#submitPostButton(disabled="") Post

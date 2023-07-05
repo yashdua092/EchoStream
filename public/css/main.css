@@ -1,8 +1,13 @@
 :root {
     --blue: #1FA2F1; /* helps to create css varibale  */
+    --blueLight: #9BD1F9;
     --buttonHoverBg: #d4ddff;
     --lightGrey: rgb(230, 236, 240);
     --spacing: 15px;
+}
+
+* {
+    outline: none !important;
 }
 
 a {
@@ -35,15 +40,17 @@ nav a {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* color: #1FA2F1; */
 }
 
 nav a.blue {
-    color: var(--blue)
+    color: var(--blue);
 }
 
 nav a:hover {
     background-color: var(--buttonHoverBg);
-    color: var(--blue);
+    /* color: var(--blue); */
+    color: #1FA2F1;
     border-radius: 50%;
 }
 
@@ -66,4 +73,47 @@ nav a:hover {
 
 .titleContainer h1 {
     flex: 1;
+}
+
+.postFormContainer {
+    display: flex;
+    padding: var(--spacing);
+    border-bottom: 10px solid rgb(230, 236, 240);
+    flex-shrink: 0;
+}
+
+.userImageContainer {
+    height: 50px;
+    width: 50px;
+}
+
+.userImageContainer img {
+    width: 100%;
+    background-color: white;
+    border-radius: 50%
+}
+
+.textareaContainer {
+    flex: 1;
+    padding-left: var(--spacing);
+}
+
+.textareaContainer textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    font-size: 15px;
+}
+
+#submitPostButton {
+    background-color: var(--blue);
+    /* color: white; */
+    border-radius: 40px;
+    border: none;
+    padding: 7px 15px;
+    font-size: 15px;
+}
+
+#submitPostButton:disabled {
+    background-color: var(--blueLight);
 }
