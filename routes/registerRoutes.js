@@ -53,7 +53,7 @@ router.post("/", async (req, res, next) => {
             data.password = await bcrypt.hash(password, 10) // how many times to do hashing calculation on password(2**10)
 
             User.create(data) // mongodb stuffs return promise hence async, also mongodb itself validates if data according to schema or not.
-            .then((user) => {
+            .then((user) => { // .then will get the whole User object to perform stuff on that
                 // console.log(user)
                 req.session.user = user // starting the session after registering 
                 return res.redirect("/")

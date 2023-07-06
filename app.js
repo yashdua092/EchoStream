@@ -28,12 +28,17 @@ const loginRoute = require('./routes/loginRoutes')
 const registerRoute = require('./routes/registerRoutes')
 const logoutRoute = require('./routes/logout')
 
+// API routes
+const postsApiRoute = require('./routes/api/posts');
+
 
 // app.use() is used to setup middleware for the application.
 // from main page to different pages basically.
 app.use("/login", loginRoute) // after returning from middleware, need to get the user to login if already registered. this is where it will go from middleware.
 app.use("/register", registerRoute)
 app.use("/logout", logoutRoute)
+
+app.use("/api/posts", postsApiRoute)
 
 app.get("/", middleware.requireLogin, (req, res, next) => {
 // this function tackles what happens when user request the root of the site.(home page)
