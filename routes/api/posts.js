@@ -13,6 +13,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // Handler for the /login route(get request)
 router.get("/", (req, res, next) => {
     // will handle the get request
+    Post.find() // find gives results as a list, if not finding only 1 post
+    .populate("postedBy") // we only have user id, not other info about user like name , profile pic etc.
+    // to get these need to populate user info using postedBy
+    .sort({"createdAt" : -1}) // will sort in descending order to see newer posts first
+    .then((results) => {
+        res.status(200).send(results)
+    })
+    .catch(error => {
+        console.log(error)
+        res.send(404)
+    })
 })
 
 router.post("/", async (req, res, next) => {

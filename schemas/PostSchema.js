@@ -13,7 +13,8 @@ const PostSchema = new Schema({ // 2 parameters: data and some other options
         type: Schema.Types.ObjectId, // user will have a objectid who is currently in session, mongoose
         // will populatye or rather provide a reference to that document(object) using this
         ref: 'User', // User collection, to estbalish a relationship
-        pinned: Boolean
+        pinned: Boolean,
+        likes: [{ type: Schema.Types.ObjectId, ref: 'User' }] // will contain all the users that like this post
     }
  
 }, { timestamps: true}) // timestamps helps to get created at and updated at property

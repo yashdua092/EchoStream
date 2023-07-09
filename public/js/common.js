@@ -1,8 +1,12 @@
-// will contain all the shared code by each page.
+// will contain all the shared code(functionality one) by each page.
+
+
 
 // $(document).ready(() => {
 //     // after everything is loaded all components imported etx
 // })
+
+
 
 // for button as different pages will have buttons that show some functionality
 // will fire if some text inside textarea to post otherwise button will be disabled.
@@ -49,11 +53,31 @@ $("#submitPostButton").click((event) => {
 
 })
 
+// this won't work as by the time this executes these buttons are not on the page
+// dynamic content
+// $(".likeButton").click((event) => {
+//     alert("button Clicked") 
+// })
+
+// instead use document and on and specify the event and on what object(by class or id)
+$(document).on("click", ".likeButton", () => {
+    alert("button clicked")
+})
+
+
 function createPostHtml(postData) {
     
     var postedBy = postData.postedBy
+
+    if(postedBy._id === undefined) {
+        // it's not the object yet just the object id
+        // return alert("user object not populated")
+        return console.log("user object not populated")
+    }
+
     var displayName = postedBy.firstName + " " + postedBy.lastName
-    var timestamp = postData.createdAt
+    // var timestamp = postData.createdAt
+    var timestamp = timeDifference(new Date(), new Date(postData.createdAt))
 
 
     return `<div class='post'>
@@ -82,7 +106,7 @@ function createPostHtml(postData) {
                                 </button>
                             </div>
                             <div class='postButtonContainer'>
-                                <button>
+                                <button class='likeButton'>
                                     <i class='far fa-heart'></i>
                                 </button>
                             </div>
@@ -91,6 +115,42 @@ function createPostHtml(postData) {
                     </div>
                 </div>    
             </div>` // this is used to inject variables inside string
+}
+
+function timeDifference(current, previous) {
+
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+        if(elapsed/1000 < 30) return "Just now"
+        return Math.round(elapsed/1000) + ' seconds ago';   
+    }
+
+    else if (elapsed < msPerHour) {
+        return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    }
+
+    else if (elapsed < msPerDay ) {
+        return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    }
+
+    else if (elapsed < msPerMonth) {
+        return Math.round(elapsed/msPerDay) + ' days ago';   
+    }
+
+    else if (elapsed < msPerYear) {
+        return Math.round(elapsed/msPerMonth) + ' months ago';   
+    }
+
+    else {
+        return Math.round(elapsed/msPerYear ) + ' years ago';   
+    }
 }
 
 // rest api badically helps server to interact with database

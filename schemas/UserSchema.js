@@ -33,7 +33,8 @@ const userSchema = new Schema({ // 2 parameters: data and some other options
     profilePic: {
         type: String,
         default: "/images/profilePic.png"
-    }
+    },
+    likes: [{ type: Schema.Types.ObjectId, ref: 'Post ' }]
 }, { timestamps: true}) // timestamps helps to get created at and updated at property
 // all these properties will be accessible for that particular user as in loginRoutes.js file
 

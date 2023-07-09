@@ -1,7 +1,6 @@
 //- these are basically resuable block of pug codes that can be used.
 
 //- making for post form
-
 mixin createPostForm(userLoggedIn)
     //- identation as python
     .postFormContainer  
@@ -10,4 +9,4 @@ mixin createPostForm(userLoggedIn)
         .textareaContainer 
             textarea#postTextarea(placeholder="what's on your mind?")
             .buttonContainer 
-                button#submitPostButton(disabled="") Post
+                button#submitPostButton(disabled="") POST
