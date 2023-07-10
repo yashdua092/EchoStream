@@ -12,13 +12,13 @@ const PostSchema = new Schema({ // 2 parameters: data and some other options
     postedBy: {
         type: Schema.Types.ObjectId, // user will have a objectid who is currently in session, mongoose
         // will populatye or rather provide a reference to that document(object) using this
-        ref: 'User', // User collection, to estbalish a relationship
-        pinned: Boolean,
-        likes: [{ type: Schema.Types.ObjectId, ref: 'User' }] // will contain all the users that like this post
-    }
- 
+        ref: 'User'
+    }, // User collection, to estbalish a relationship
+    pinned: Boolean,
+    likes: [{ type: Schema.Types.ObjectId, ref: 'User' }] // will contain all the users that like this post(array of user objects_ids)
 }, { timestamps: true}) // timestamps helps to get created at and updated at property
 // all these properties will be accessible for that particular user as in loginRoutes.js file
+ 
 
 var Post = mongoose.model('Post', PostSchema) //  takes two arguments: the name of the model (which is 'User' in this case) and the schema to be used for the model.
 module.exports = Post // user model is exported.

@@ -7,7 +7,7 @@ $(document).ready(() => {
 
     $.get("/api/posts", results => { // results will be send after the request is answered
 
-        console.log(results)
+        // console.log(results)
         outputPosts(results, $(".postsContainer"))
     })
 })

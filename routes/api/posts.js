@@ -55,4 +55,39 @@ router.post("/", async (req, res, next) => {
     // res.status(200).send("it worked");
 })
 
+router.put("/:id/like", async (req, res, next) => { // can name anything id, newId etc referring to javascript variable
+    var postId = req.params.id
+    var userId = req.session.user._id
+    
+    // to like or dislike it, if already inside user's like list: dislike else like
+    var isLiked = req.session.user.likes && req.session.user.likes.includes(postId)
+    // console.log("is liked" + isLiked)
+
+    var option = isLiked ? "$pull" : "$addToSet";
+
+    // after liking it once, updating the database: user liked but the session hasn't updated
+    // therefore if again press the button to dilike it isLiked will be false. so won't remove the like or postId stored in db.
+    // could manually update it by equating the following line with 'req.session.user' and adding 'new' at end
+
+    // insert/remove user's like               // mongodb will look for field hence used [] here
+    req.session.user = await User.findByIdAndUpdate(userId, { [option]: { likes: postId } }, { new: true }) // function  takes in the id first and what to update in that as key and object
+    // but here we wanna add to list or remove it so this is used instead
+    // if it was the first nama that we were changing then:-
+    // User.findByIdAndUpdate(userId, { firstName: "jfhwhjwh" })
+    .catch((error) => {
+        console.log(error)
+        res.sendStatus(400)
+    })
+
+    // insert post like
+    var post = await Post.findByIdAndUpdate(postId, { [option]: { likes: userId } }, { new: true }) // function  takes in the id first and what to update in that as key and object
+    .catch((error) => {
+        // console.log("executing")
+        console.log(error)
+        res.sendStatus(400)
+    })
+
+    res.status(200).send(post)
+})
+
 module.exports = router

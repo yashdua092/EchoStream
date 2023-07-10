@@ -46,7 +46,8 @@ $("#submitPostButton").click((event) => {
         // also contains info about User as populated
         // populated ->  replacing a reference or foreign key in a document with the actual referenced data from another collection.
         var html = createPostHtml(postData)
-        $(".postsContainer").append(html)
+        // $(".postsContainer").append(html)
+        $(".postsContainer").prepend(html)
         textbox.val("")
         button.prop("disabled", true)
     })
@@ -60,9 +61,39 @@ $("#submitPostButton").click((event) => {
 // })
 
 // instead use document and on and specify the event and on what object(by class or id)
-$(document).on("click", ".likeButton", () => {
-    alert("button clicked")
+$(document).on("click", ".likeButton", (event) => {
+    // alert("button clicked")
+    var button = $(event.target)
+    var postId =  getPostIdFromElement(button)
+    // console.log(postId)
+    
+    if(postId === undefined) return
+
+    // AJAX request to update(put request) post
+    $.ajax({
+        url: `/api/posts/${postId}/like`, // to insert javascript variable use back ticks
+        type: "PUT",
+        success: (postData) => { // will return updated post upon success
+            // console.log(postData)
+            console.log(postData.likes.length)
+            // console.log("hurray")
+        }
+    })
 })
+
+function getPostIdFromElement(element) {
+    var isRoot = element.hasClass("post") // Html of post(root element div has class: post)
+    // has been assigned wih post_id as well as data attribute.
+    var rootElement = isRoot == true ? element : element.closest(".post") // .closest is a jquery function that goes up to the tree and tries to find the parent with specified character(.post(class))
+    // any element of certain class or id will be send like: like button, retweet button
+    // in that case require post_id to make changes in server
+    // will traverse that hierarchy to get the post-id.
+    var postId = rootElement.data().id // .data() gives all the data elements attached to an element, we only have one(id)
+
+    if(postId === undefined) return alert("post id undefined")
+    
+    return postId
+}
 
 
 function createPostHtml(postData) {
@@ -80,7 +111,7 @@ function createPostHtml(postData) {
     var timestamp = timeDifference(new Date(), new Date(postData.createdAt))
 
 
-    return `<div class='post'>
+    return `<div class='post' data-id='${postData._id}'>
                 <div class='mainContentContainer'>
                     <div class='userImageContainer'>
                         <img src='${postedBy.profilePic}'>
