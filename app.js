@@ -44,7 +44,10 @@ app.get("/", middleware.requireLogin, (req, res, next) => {
 // this function tackles what happens when user request the root of the site.(home page)
     var payload = {
         pageTitle: "Hola",
-        userLoggedIn: req.session.user // info about the user which was stored in req.session.user is given to userLoggedIn and hence payload which is sent to pug file.
+        userLoggedIn: req.session.user, // info about the user which was stored in req.session.user is given to userLoggedIn and hence payload which is sent to pug file.
+        // we cannot use this on the client side, only on the server side but need it to show whether already liked or not etc
+        userLoggedInJs: JSON.stringify(req.session.user) // client will use this
+        // to pass data b/w pages need to convert them to string
     }
 
     // res.status(200).send("Yahoo!") // successful

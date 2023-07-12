@@ -6,6 +6,7 @@
     --spacing: 15px;
     --greyTexy: rgb(101, 119, 134);
     --greyButtonText: rgb(0, 0, 0, 0.34);
+    --red : rgb(226, 34, 94);
 }
 
 * {
@@ -60,6 +61,11 @@ button {
     background-color: transparent;
     border: none;
     color: var(--greyButtonText);
+}
+
+button i, 
+button span {
+    pointer-events: none; /* don't register any mouse events on these */
 }
 
 .mainSectionContainer {
@@ -185,4 +191,8 @@ button {
     background-color: #d4edff;
     color: var(--blue);
     border-radius: 50%;
+}
+
+.postButtonContainer.red button.active {
+    color: var(--red);
 }

@@ -29,7 +29,7 @@ $("#postTextarea").keyup((event) => { // keyup event will fire when key\board ke
 // 
 
 $("#submitPostButton").click((event) => {
-    var button = $(event.target);
+    var button = $(event.target); 
     var textbox = $("#postTextarea");
 
     // info to send to server
@@ -61,9 +61,12 @@ $("#submitPostButton").click((event) => {
 // })
 
 // instead use document and on and specify the event and on what object(by class or id)
-$(document).on("click", ".likeButton", (event) => {
-    // alert("button clicked")
-    var button = $(event.target)
+$(document).on("click", ".likeButton", (event) => { // need to updfate the database when like button clicked
+    // need to see which user liked the post and update the like list of user as well
+    // alert("button clicked") 
+    var button = $(event.target)// here it is the <i> tag. not the button html tag
+    // here while updating the span to show the likes, used button but button is <i> not html button
+    // so updated in main.css pointer-events: none; which means don't register any mouse events on these basically.
     var postId =  getPostIdFromElement(button)
     // console.log(postId)
     
@@ -75,8 +78,17 @@ $(document).on("click", ".likeButton", (event) => {
         type: "PUT",
         success: (postData) => { // will return updated post upon success
             // console.log(postData)
-            console.log(postData.likes.length)
+            // console.log(postData.likes.length)
             // console.log("hurray")
+
+            button.find("span").text(postData.likes.length || "") // button only has 1 span, describes the no. of likes
+
+            if(postData.likes.includes(userLoggedIn._id)) {
+                button.addClass("active") // will add active to current button class
+            }
+            else {
+                button.removeClass("active") // if double clicked
+            }
         }
     })
 })
@@ -110,6 +122,8 @@ function createPostHtml(postData) {
     // var timestamp = postData.createdAt
     var timestamp = timeDifference(new Date(), new Date(postData.createdAt))
 
+    var likeButtonActiveClass = postData.likes.includes(userLoggedIn ._id) ? "active" : "" // to mske sure the color is maintained once the page reloads as well.
+    // once the page is load need to know if to show color red or not hence need to add active or not in main.css.
 
     return `<div class='post' data-id='${postData._id}'>
                 <div class='mainContentContainer'>
@@ -131,14 +145,15 @@ function createPostHtml(postData) {
                                     <i class='far fa-comment'></i>
                                 </button>
                             </div>
-                            <div class='postButtonContainer'>
-                                <button>
+                            <div class='postButtonContainer green'>
+                                <button class='retweet'>
                                     <i class='fas fa-retweet'></i>
                                 </button>
                             </div>
-                            <div class='postButtonContainer'>
-                                <button class='likeButton'>
+                            <div class='postButtonContainer red'>
+                                <button class='likeButton ${likeButtonActiveClass}'>
                                     <i class='far fa-heart'></i>
+                                    <span>${postData.likes.length || ""}</span>
                                 </button>
                             </div>
                             </div>
