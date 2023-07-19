@@ -46,6 +46,9 @@ app.get("/", middleware.requireLogin, (req, res, next) => {
         pageTitle: "Hola",
         userLoggedIn: req.session.user, // info about the user which was stored in req.session.user is given to userLoggedIn and hence payload which is sent to pug file.
         // we cannot use this on the client side, only on the server side but need it to show whether already liked or not etc
+
+        // common.js which is basically the client side cannot access this user info, can pass the payload but becomes empty after page is rendered
+        // hence store in a var in pug page and then use in client side as well
         userLoggedInJs: JSON.stringify(req.session.user) // client will use this
         // to pass data b/w pages need to convert them to string
     }

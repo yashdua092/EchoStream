@@ -14,6 +14,8 @@ html(lang="en")
     body 
         script.
             //- passing user info so that can be used in client side as well if needed
+            //- we don't have anything in the payload once the pug pages have rendered hence need to store these in var
+            // so that can be used in backend as well.
             var userLoggedIn = !{userLoggedInJs}
         //- div with classname wrapper
         .wrapper 

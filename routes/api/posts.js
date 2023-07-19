@@ -16,8 +16,10 @@ router.get("/", (req, res, next) => {
     Post.find() // find gives results as a list, if not finding only 1 post
     .populate("postedBy") // we only have user id, not other info about user like name , profile pic etc.
     // to get these need to populate user info using postedBy
+    .populate("retweetData") // populating retweetData(in postSchema contains post id hence will get everything using retweetData after populating)
     .sort({"createdAt" : -1}) // will sort in descending order to see newer posts first
-    .then((results) => {
+    .then(async (results) => {
+        results = await User.populate(results, { path: "retweetData.postedBy" }) // what to populate, and need to give the path.
         res.status(200).send(results)
     })
     .catch(error => {
@@ -89,5 +91,55 @@ router.put("/:id/like", async (req, res, next) => { // can name anything id, new
 
     res.status(200).send(post)
 })
+
+router.post("/:id/retweet", async (req, res, next) => { // can name anything id, newId etc referring to javascript variable
+    var postId = req.params.id
+    var userId = req.session.user._id
+    
+    // try and delete retweet(if can :unretweeted, if can't :not existed to begin with)
+    var deletedPost = await Post.findOneAndDelete({
+        postedBy: userId, 
+        retweetData: postId
+    })
+    .catch((error) => {
+        console.log(error)
+        res.sendStatus(400)
+    })
+
+    var option = deletedPost != null ? "$pull" : "$addToSet";
+    
+    var repost = deletedPost
+    if(repost == null) {
+        // create the post or retweet it
+        repost = await Post.create({
+            postedBy: userId,
+            retweetData: postId
+        })
+        .catch((error) => {
+            console.log(error)
+            res.sendStatus(400)
+        })
+    }
+
+
+    // insert/remove user's retweet               // mongodb will look for field hence used [] here
+    req.session.user = await User.findByIdAndUpdate(userId, { [option]: { retweets: repost._id } }, { new: true }) // function  takes in the id first and what to update in that as key and object
+    
+    .catch((error) => {
+        console.log(error)
+        res.sendStatus(400)
+    })
+
+    // insert post like
+    var post = await Post.findByIdAndUpdate(postId, { [option]: { retweetUsers: userId } }, { new: true }) // function  takes in the id first and what to update in that as key and object
+    .catch((error) => {
+        // console.log("executing")
+        console.log(error)
+        res.sendStatus(400)
+    })
+
+    res.status(200).send(post)
+})
+
 
 module.exports = router
