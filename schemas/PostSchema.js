@@ -17,7 +17,8 @@ const PostSchema = new Schema({ // 2 parameters: data and some other options
     pinned: Boolean,
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }], // will contain all the users that like this post(array of user objects_ids)
     retweetUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    retweetData: { type: Schema.Types.ObjectId, ref: 'Post' } // id of the post we are retweeting
+    retweetData: { type: Schema.Types.ObjectId, ref: 'Post' }, // id of the post we are retweeting
+    replyTo: { type: Schema.Types.ObjectId, ref: 'Post' }
 }, { timestamps: true}) // timestamps helps to get created at and updated at property
 // all these properties will be accessible for that particular user as in loginRoutes.js file
  

@@ -11,16 +11,3 @@ $(document).ready(() => {
         outputPosts(results, $(".postsContainer"))
     })
 })
-
-function outputPosts(results, container) {
-    container.html("")
-
-    results.forEach((result) => { // will loop over each element of results(posts) and provide to anonymous function as result 
-        var html = createPostHtml(result)
-        container.append(html)
-    })
-
-    if(results.lenght == 0) {
-        container.append("<span class='noResults'><i>Why So Empty?</i></span>")
-    }
-}

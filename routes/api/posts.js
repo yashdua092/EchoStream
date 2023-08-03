@@ -11,25 +11,40 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // router will handle the request here not app
 // Handler for the /login route(get request)
-router.get("/", (req, res, next) => {
+router.get("/", async (req, res, next) => {
     // will handle the get request
-    Post.find() // find gives results as a list, if not finding only 1 post
-    .populate("postedBy") // we only have user id, not other info about user like name , profile pic etc.
-    // to get these need to populate user info using postedBy
-    .populate("retweetData") // populating retweetData(in postSchema contains post id hence will get everything using retweetData after populating)
-    .sort({"createdAt" : -1}) // will sort in descending order to see newer posts first
-    .then(async (results) => {
-        results = await User.populate(results, { path: "retweetData.postedBy" }) // what to populate, and need to give the path.
-        res.status(200).send(results)
-    })
-    .catch(error => {
-        console.log(error)
-        res.send(404)
-    })
+
+    // Post.find() // find gives results as a list, if not finding only 1 post
+    // .populate("postedBy") // we only have user id, not other info about user like name , profile pic etc.
+    // // to get these need to populate user info using postedBy
+    // .populate("retweetData") // populating retweetData(in postSchema contains post id hence will get everything using retweetData after populating)
+    // .sort({"createdAt" : -1}) // will sort in descending order to see newer posts first
+    // .then(async (results) => {
+    //     results = await User.populate(results, { path: "retweetData.postedBy" }) // what to populate, and need to give the path.
+    //     res.status(200).send(results)
+    // })
+    // .catch(error => {
+    //     console.log(error)
+    //     res.send(404)
+    // })
+
+    var results = await getPosts( {} ) // empty to get all the posts
+    res.status(200).send(results)
+})
+
+router.get("/:id", async (req, res, next) => {
+    
+    var postId = req.params.id
+
+    var results = await getPosts( {_id: postId}  )
+    results = results[0] // need to do this as we are not using findOne, so returns an array instead.
+    console.log(results)
+    res.status(200).send(results)
 })
 
 router.post("/", async (req, res, next) => {
     // will handle the post request
+
 
     if(!req.body.content) {
         console.log("content param not sent with request")
@@ -40,6 +55,10 @@ router.post("/", async (req, res, next) => {
         content: req.body.content,
         // we have the user from session, not need to pass in request
         postedBy: req.session.user // user info who is posting will be stored and given here
+    }
+
+    if(req.body.replyTo) {
+        postData.replyTo = req.body.replyTo // will basically create a new post which will have replyTo array, will store the id of the post replying to.
     }
 
     Post.create(postData) // returns a promise
@@ -141,5 +160,25 @@ router.post("/:id/retweet", async (req, res, next) => { // can name anything id,
     res.status(200).send(post)
 })
 
+async function getPosts(filter) {
+    var results = await Post.find(filter) // find gives results as a list, if not finding only 1 post
+    .populate("postedBy") // we only have user id, not other info about user like name , profile pic etc.
+    // to get these need to populate user info using postedBy
+    .populate("retweetData") // populating retweetData(in postSchema contains post id hence will get everything using retweetData after populating)
+    .populate("replyTo")
+    .sort({"createdAt" : -1}) // will sort in descending order to see newer posts first
+    .catch(error => {
+        console.log(error)
+        // res.send(404)
+    })
+    // .then(async (results) => {
+    //     results = await User.populate(results, { path: "retweetData.postedBy" }) // what to populate, and need to give the path.
+    //     res.status(200).send(results)
+    // })
+
+
+    results = await User.populate(results, { path: "replyTo.postedBy" }) // will only have id inside replyTo if not done this step.
+    return await User.populate(results, { path: "retweetData.postedBy" })
+}
 
 module.exports = router

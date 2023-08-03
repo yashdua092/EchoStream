@@ -99,6 +99,16 @@ button span {
     flex-shrink: 0;
 }
 
+.modal .postFormContainer {
+    border: none;
+    padding: 0;
+    padding-top: 10px;
+}
+
+.modal .post {
+    padding: 0 0 var(--spacing) 0;
+}
+
 .userImageContainer {
     height: 50px;
     width: 50px;
@@ -215,4 +225,12 @@ button span {
     padding-left: 35px;
     font-size: 13px;
     color: var(--greyText)
+}
+
+.replyFlag {
+    margin-bottom: 5px;
+}
+
+.replyFlag a {
+    color: var(--blue);
 }
