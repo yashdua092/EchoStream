@@ -27,6 +27,7 @@ app.use(session({
 const loginRoute = require('./routes/loginRoutes')
 const registerRoute = require('./routes/registerRoutes')
 const logoutRoute = require('./routes/logout')
+const postRoute = require('./routes/postRoutes')
 
 // API routes
 const postsApiRoute = require('./routes/api/posts');
@@ -37,6 +38,7 @@ const postsApiRoute = require('./routes/api/posts');
 app.use("/login", loginRoute) // after returning from middleware, need to get the user to login if already registered. this is where it will go from middleware.
 app.use("/register", registerRoute)
 app.use("/logout", logoutRoute)
+app.use("/posts", middleware.requireLogin, postRoute)
 
 app.use("/api/posts", postsApiRoute)
 

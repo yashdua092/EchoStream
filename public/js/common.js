@@ -98,7 +98,7 @@ $("#replyModal").on("show.bs.modal", (event) => {
     // will get using api
     $.get("/api/posts/" + postId, (results) => {
         // console.log(results)
-        outputPosts(results, $("#originalPostContainer")) // expects array 
+        outputPosts(results.postData, $("#originalPostContainer")) // expects array 
     })
 })
 
@@ -174,6 +174,17 @@ $(document).on("click", ".retweetButton", (event) => {
     })
 })
 
+$(document).on("click", ".post", (event) => { // for post page
+    var element = $(event.target)
+    var postId = getPostIdFromElement(element)
+
+    if(postId !== undefined && !element.is("button")) { // also mke sure 3 buttons don't take to post page
+        // .is in javascript just check the type, so if element is not a button then proceed
+        // direct the user to post page
+        window.location.href = '/posts/' + postId;
+    }
+})
+
 function getPostIdFromElement(element) {
     var isRoot = element.hasClass("post") // Html of post(root element div has class: post)
     // has been assigned wih post_id as well as data attribute.
@@ -189,7 +200,7 @@ function getPostIdFromElement(element) {
 }
 
 
-function createPostHtml(postData) {
+function createPostHtml(postData, largeFont = false) { 
 
     if(postData == null) return alert("post object is null")
 
@@ -212,6 +223,7 @@ function createPostHtml(postData) {
     var likeButtonActiveClass = postData.likes.includes(userLoggedIn ._id) ? "active" : "" // to make sure the color is maintained once the page reloads as well.
     // once the page is load need to know if to show color red or not hence need to add active or not in main.css.
     var retweetButtonActiveClass = postData.retweetUsers.includes(userLoggedIn ._id) ? "active" : ""
+    var largeFontClass = largeFont ? "largeFont" : ""
     var retweetText = ""
     if(isRetweet) {
         retweetText = `<span>
@@ -221,7 +233,7 @@ function createPostHtml(postData) {
     }
 
     var replyFlag = ""
-    if(postData.replyTo) {
+    if(postData.replyTo && postData.replyTo._id) {
 
         if(!postData.replyTo._id) {
             return alert("reply to is not populated")
@@ -236,7 +248,7 @@ function createPostHtml(postData) {
                     </div>`
     }
 
-    return `<div class='post' data-id='${postData._id}'>
+    return `<div class='post ${largeFontClass}' data-id='${postData._id}'>
                 <div class='postActionContainer'>
                     ${retweetText}
                 </div>
@@ -337,3 +349,25 @@ function outputPosts(results, container) {
 // for getting notifications or posting anything or messaging or getting the messages etc
 // all is done using rest api.
 // no role of frontend accept clicking a button etc to send a post request like here
+
+
+function outputPostsWithReplies(results, container) {
+    container.html("")
+
+    if(results.replyTo !== undefined && results.replyTo.__id !== undefined) { // making sure also populated
+        var html = createPostHtml(results.replyTo)
+        container.append(html)
+    }
+
+    var mainPostHtml = createPostHtml(results.postData, true)
+    container.append(mainPostHtml)
+
+    results.replies.forEach((result) => { // will loop over each element of results(posts) and provide to anonymous function as result 
+        var html = createPostHtml(result)
+        container.append(html)
+    })
+
+    // if(results.lenght == 0) {
+    //     container.append("<span class='noResults'><i>Why So Empty?</i></span>")
+    // }
+}

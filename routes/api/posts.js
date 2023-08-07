@@ -36,9 +36,21 @@ router.get("/:id", async (req, res, next) => {
     
     var postId = req.params.id
 
-    var results = await getPosts( {_id: postId}  )
-    results = results[0] // need to do this as we are not using findOne, so returns an array instead.
-    console.log(results)
+    var postData = await getPosts( {_id: postId}  )
+    postData = postData[0] // need to do this as we are not using findOne, so returns an array instead.
+    // console.log(results)
+
+    var results = {
+        postData: postData
+    }
+
+    if(postData.replyTo !== undefined) { // basically a reply 
+        results.replyTo = postData.replyTo
+    }
+    
+    // getting all the replies
+    results.replies = await getPosts({ replyTo: postId }) // only those post with reply to field of postid will be returned
+
     res.status(200).send(results)
 })
 
