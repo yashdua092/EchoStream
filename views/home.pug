@@ -9,7 +9,12 @@ block content
     +createPostForm(userLoggedIn)
     .postsContainer
 
-    +createReplyModal(userLoggedIn)
+    //- +createReplyModal(userLoggedIn)
+    //- +createDeletePostModal(userLoggedIn)
+
+    //- clubbed the above 2 fucntions into 1
+    //- contains all the frontend code required by posts anywhere.
+    +createPostModals(userLoggedIn)
 
 block scripts 
     script(src="./js/home.js")

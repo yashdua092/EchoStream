@@ -172,6 +172,17 @@ router.post("/:id/retweet", async (req, res, next) => { // can name anything id,
     res.status(200).send(post)
 })
 
+router.delete("/:id", (req, res, next) => {
+    Post.findByIdAndDelete(req.params.id)
+    .then(() => {
+        res.sendStatus(202)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.sendStatus(400)
+    })
+})
+
 async function getPosts(filter) {
     var results = await Post.find(filter) // find gives results as a list, if not finding only 1 post
     .populate("postedBy") // we only have user id, not other info about user like name , profile pic etc.

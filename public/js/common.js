@@ -106,6 +106,42 @@ $("#replyModal").on("hidden.bs.modal", (event) => {
     $("#originalPostContainer").html("")
 })
 
+$("#deletePostModal").on("show.bs.modal", (event) => {
+    // alert("opened")
+    var button = $(event.relatedTarget) // event of .modal being called, it's related to button event being clicked
+    var postId =  getPostIdFromElement(button) // can get the post id by knowing the reply button bieng pressed
+    
+    // will add this id to submit button(inside modal) so that don't search for it again.
+    $("#deletePostButton").data("id", postId) // data method stores on jquery's cache instead of showing but there, can access
+    // when will handle click event on that button
+    // also can store on button using attr method
+    // basically attaches postId on button 
+
+    // console.log($("#deletePostButton").data().id)
+
+    // need to delete the post now
+    // will add a click event handler on delete button basically tp delete the post
+    
+})
+
+$("#deletePostButton").click((event) => {
+    // delete ajax call
+    var postId = $(event.target).data("id") // this here refers to the button, generally refers to the element where the event was fired on
+
+    // DELETE method
+    $.ajax({
+        url: `/api/posts/${postId}`, // to insert javascript variable use back ticks
+        type: "DELETE",
+        success: (data, status, xhr) => { // data contains what is sent, status contains status msg and xhr helps to find status code
+            if(xhr.status != 202) {
+                alert("could not delete the post")
+                return;
+            }
+            location.reload()
+        }
+    })
+})
+
 
 // this won't work as by the time this executes these buttons are not on the page
 // dynamic content
@@ -248,6 +284,12 @@ function createPostHtml(postData, largeFont = false) {
                     </div>`
     }
 
+    var buttons = ""
+    if ( postData.postedBy._id == userLoggedIn._id ) {
+        // belongs to the user logged in
+        buttons = `<button data-id="${postData._id}" data-toggle="modal" data-target="#deletePostModal"><i class='fas fa-times'></i></button>`
+    }  
+
     return `<div class='post ${largeFontClass}' data-id='${postData._id}'>
                 <div class='postActionContainer'>
                     ${retweetText}
@@ -261,6 +303,7 @@ function createPostHtml(postData, largeFont = false) {
                             <a href='/profile/${postedBy.username}' class='displayName'>${displayName}</a>
                             <span class='username'>@${postedBy.username}</span>
                             <span class='date'>${timestamp}</span>
+                            ${buttons}
                         </div>
                         ${replyFlag}
                         <div class='postBody'>

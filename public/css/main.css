@@ -199,6 +199,12 @@ button span {
 .header span {
     padding-right: 5px;
 }
+.postContentContainer .header {
+    display: flex;
+}
+.postContentContainer .header .date {
+    flex: 1;
+}
 
 .postButtonContainer button:hover {
     background-color: #d4edff;

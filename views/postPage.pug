@@ -6,7 +6,10 @@ block content
         var postId = '!{postId}' // passed in payload 
     .postsContainer
 
-    +createReplyModal(userLoggedIn)
+    //- +createReplyModal(userLoggedIn)
+    //- +createDeletePostModal(userLoggedIn)
+    +createPostModals(userLoggedIn) 
+    
 
 block scripts 
     script(src="/js/postPage.js")
