@@ -47,3 +47,12 @@ mixin createDeletePostModal()
 mixin createPostModals(userLoggedIn)
     +createReplyModal(userLoggedIn)
     +createDeletePostModal()
+
+mixin createFollowbutton(user, isFollowing)
+    //- creatign a var in pug
+
+    //- text inside button
+    - text = isFollowing ? "Following" : "Follow"
+    //- button class will change depending upon following or not
+    - buttonClass = isFollowing ? "followButton following" : "followButton"
+    button(class=buttonClass, data-user=user._id) #{text}

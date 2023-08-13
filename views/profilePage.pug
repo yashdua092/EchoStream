@@ -1,0 +1,44 @@
+extends layouts/main-layout.pug
+
+//- any page which extends another template file need to use blocks to render it 
+block content
+    //- h1 This is home page.
+    //- p #{userLoggedIn.firstName}
+    if !profileUser
+        span.errorMessage User Not Found 
+    else 
+        //- span #{profileUser.firstName}
+        .profileHeaderContainer 
+            .coverPhotoContainer    
+
+                .userImageContainer 
+                    img(src=profileUser.profilePic, alt="User profile Image")
+            .profileButtonsContainer
+                if profileUser._id != userLoggedIn._id 
+                    //- profile button will take to the msg page
+                    a.profileButton(href=`/messages/${profileUser._id}`) 
+                        i.fas.fa-envelope
+                    +createFollowbutton(profileUser, true)
+            .userDetailsContainer 
+                span.displayName #{profileUser.firstName} #{profileUser.lastName}
+                span.username @#{profileUser.username}
+                //- span.description @#{profileUser.description} 
+
+                .followersContainer 
+                    a(href=`/profile/${profileUser.username}/folllowing`)
+                        span.value #{0}
+                        span Following
+                    a(href=`/profile/${profileUser.username}/followers`)
+                        span.value #{0}
+                        span Followers
+        .postsContainer
+
+        //- +createReplyModal(userLoggedIn)
+        //- +createDeletePostModal(userLoggedIn)
+
+        //- clubbed the above 2 fucntions into 1
+        //- contains all the frontend code required by posts anywhere.
+        +createPostModals(userLoggedIn)
+
+block scripts 
+    script(src="./js/profile.js")
