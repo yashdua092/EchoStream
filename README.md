@@ -1,7 +1,7 @@
 Learn Full Stack Web Dev by building Twitter Clone.
 
 
-<b>Tech Stacks:</b>
+<b>Tech Stack:</b>
 <p></p>
 <li>
   HTML
